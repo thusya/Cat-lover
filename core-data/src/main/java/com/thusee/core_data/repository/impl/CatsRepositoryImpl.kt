@@ -1,18 +1,28 @@
 package com.thusee.core_data.repository.impl
 
+import com.thusee.core_data.async.AsyncOperation
+import com.thusee.core_data.async.CatRepoAsyncEvents
+import com.thusee.core_data.di.ApplicationScope
+import com.thusee.core_data.di.DefaultDispatcher
 import com.thusee.core_data.model.Cat
 import com.thusee.core_data.repository.CatsRepository
-import com.thusee.core_data.utils.ResultOf
 import com.thusee.core_database.db.CatDao
 import com.thusee.core_database.model.CatEntity
 import com.thusee.core_network.api.ApiService
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CatsRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val catDao: CatDao,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope,
 ) : CatsRepository {
 
     override val cats: Flow<List<Cat>> = catDao
@@ -29,67 +39,62 @@ class CatsRepositoryImpl @Inject constructor(
             }
         }
 
-    suspend fun getCats(): ResultOf<List<Cat>> {
-        try {
-            val result = apiService.getImages(
-//                "live_w60ZIiiWAolIxu1QZkKys86dIraYOfFrpddj8WowOrvdHro90LJtfIrV26bfj879",
-                20,
-                1
-            )
+    private val _operationStatus: MutableSharedFlow<AsyncOperation<CatRepoAsyncEvents>> =
+        MutableSharedFlow()
 
-            val cats = result
-                .filter {
-                    it.breeds.isNotEmpty()
+    override val operationStatus: Flow<AsyncOperation<CatRepoAsyncEvents>> = _operationStatus
+
+    override suspend fun fetchCats() {
+        _operationStatus.emit(AsyncOperation.Loading)
+        scope.launch {
+            try {
+                val catsResponse = withContext(defaultDispatcher) {
+                    apiService.getImages(
+                        limit = 20,
+                        hasBreeds = 1
+                    )
                 }
-                .map {
-                    Cat(
-                        it.breeds[0].name,
-                        it.url,
-                        it.breeds[0].description
+                if (catsResponse.isEmpty()) {
+                    _operationStatus.emit(
+                        AsyncOperation.Failure(
+                            CatRepoAsyncEvents.LoadCatsFailed,
+                            Throwable("Error, No cats in server!")
+                        )
                     )
                 }
 
-            if (cats.isEmpty()) {
-                return ResultOf.Failure(
-                    Throwable("Empty Cats")
+                val catModels = catsResponse
+                    .filter {
+                        it.breeds.isNotEmpty()
+                    }
+                    .map {
+                        CatEntity(
+                            it.id,
+                            it.breeds[0].name,
+                            it.url,
+                            it.breeds[0].description,
+                            false,
+                        )
+                    }
+
+                withContext(defaultDispatcher) {
+                    catDao.upsertCats(catModels)
+                }
+                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.LoadCatsSuccess))
+            } catch (e: Exception) {
+                _operationStatus.emit(
+                    AsyncOperation.Failure(
+                        CatRepoAsyncEvents.LoadCatsFailed,
+                        e
+                    )
                 )
             }
-
-            return ResultOf.Success(cats)
-        } catch (e: Exception) {
-            return ResultOf.Failure(e)
         }
     }
 
-    override suspend fun fetchCats(): ResultOf<Unit> {
-        try {
-            val catsResponse = apiService.getImages(
-//                "live_w60ZIiiWAolIxu1QZkKys86dIraYOfFrpddj8WowOrvdHro90LJtfIrV26bfj879",
-                20,
-                1
-            )
-            if (catsResponse.isEmpty()) return ResultOf.Failure(Throwable("No cats found"))
-            val catModels = catsResponse
-                .filter {
-                    it.breeds.isNotEmpty()
-                }
-                .map {
-                    CatEntity(
-                        it.id,
-                        it.breeds[0].name,
-                        it.url,
-                        it.breeds[0].description,
-                        false,
-                    )
-                }
-            catDao.upsertCats(catModels)
-            return ResultOf.Success(Unit)
-        } catch (e: Exception) {
-            return ResultOf.Failure(e)
-        }
-    }
+    override suspend fun onFavoriteCat(cat: Cat) {
+        _operationStatus.emit(AsyncOperation.Loading)
 
-    override suspend fun onFavoriteCat(cat: Cat): ResultOf<Unit> {
         val catModel = CatEntity(
             cat.id,
             cat.breed,
@@ -99,10 +104,19 @@ class CatsRepositoryImpl @Inject constructor(
         )
 
         try {
-            catDao.upsertCat(catModel)
-            return ResultOf.Success(Unit)
+            scope.launch(defaultDispatcher) { catDao.upsertCat(catModel) }
+            if (catModel.isFavorite == true) {
+                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.FavoriteCatsSuccess))
+            } else {
+                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.UnFavoriteCatsSuccess))
+            }
         } catch (e: Exception) {
-            return ResultOf.Failure(e)
+            _operationStatus.emit(
+                AsyncOperation.Failure(
+                    CatRepoAsyncEvents.FavoriteCatsFailed,
+                    e
+                )
+            )
         }
     }
 }
