@@ -1,6 +1,5 @@
 package com.thusee.core_network.model
 
-import com.thusee.core_network.model.Breed
 import kotlinx.serialization.Serializable
 
 @Serializable

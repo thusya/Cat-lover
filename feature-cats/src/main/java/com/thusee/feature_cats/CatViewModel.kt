@@ -51,7 +51,7 @@ class CatViewModel @Inject constructor(
         return CatsUIState(
             items = cats,
             isLoading = catOperationStatus is AsyncOperation.Loading,
-            userMessage = newUserMessage
+            userMessage = newUserMessage,
         )
     }
 

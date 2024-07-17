@@ -6,8 +6,9 @@ import com.thusee.core_data.di.ApplicationScope
 import com.thusee.core_data.di.DefaultDispatcher
 import com.thusee.core_data.model.Cat
 import com.thusee.core_data.repository.CatsRepository
+import com.thusee.core_data.utils.toCat
+import com.thusee.core_data.utils.toCatEntity
 import com.thusee.core_database.db.CatDao
-import com.thusee.core_database.model.CatEntity
 import com.thusee.core_network.api.ApiService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -29,13 +30,7 @@ class CatsRepositoryImpl @Inject constructor(
         .getCats()
         .map {
             it.map { catModel ->
-                Cat(
-                    id = catModel.id,
-                    breed = catModel.breed,
-                    image = catModel.image,
-                    description = catModel.description ?: "",
-                    isFavorite = catModel.isFavorite ?: false
-                )
+                catModel.toCat()
             }
         }
 
@@ -68,13 +63,7 @@ class CatsRepositoryImpl @Inject constructor(
                         it.breeds.isNotEmpty()
                     }
                     .map {
-                        CatEntity(
-                            it.id,
-                            it.breeds[0].name,
-                            it.url,
-                            it.breeds[0].description,
-                            false,
-                        )
+                        it.toCatEntity()
                     }
 
                 withContext(defaultDispatcher) {
@@ -95,13 +84,7 @@ class CatsRepositoryImpl @Inject constructor(
     override suspend fun onFavoriteCat(cat: Cat) {
         _operationStatus.emit(AsyncOperation.Loading)
 
-        val catModel = CatEntity(
-            cat.id,
-            cat.breed,
-            cat.image,
-            cat.description,
-            !cat.isFavorite,
-        )
+        val catModel = cat.copy(isFavorite = !cat.isFavorite).toCatEntity()
 
         try {
             scope.launch(defaultDispatcher) { catDao.upsertCat(catModel) }
