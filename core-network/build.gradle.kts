@@ -17,7 +17,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                type = "String",
+                name = "API_BASE_URL",
+                value =  "\"${project.properties["baseUrl"]}\""
+            )
+        }
         release {
+            buildConfigField(
+                type = "String",
+                name = "API_BASE_URL",
+                value =  "\"${project.properties["baseUrl"]}\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -31,6 +43,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -51,4 +67,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization.converter)
     implementation(libs.okHttp)
+    implementation(libs.squareup.okhttp.logging.interceptor)
+
+    implementation(libs.jakewharton.timber)
 }
