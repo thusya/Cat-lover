@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_error">Network issue</string>
+    <string name="favorite">favorite</string>
+    <string name="favorite_added">Cat added to favorites</string>
+    <string name="favorite_removed">Cat removed from favorite\n\t\t\t</string>
+    <string name="action_error">Cannot complete this action now\n</string>
+</resources>

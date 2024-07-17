@@ -1,0 +1,9 @@
+package com.thusee.feature_cats
+
+import com.thusee.core_data.model.Cat
+
+data class CatsUIState(
+    val items: List<Cat> = emptyList(),
+    val isLoading: Boolean = false,
+    val userMessage: Int? = null,
+)
