@@ -37,23 +37,21 @@ class CatViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = CatsUIState(isLoading = true)
+        initialValue = CatsUIState.Loading
     )
 
     private fun createStatus(
         cats: List<Cat>,
         catOperationStatus: AsyncOperation<CatRepoAsyncEvents>,
     ): CatsUIState {
-        val newUserMessage = when (catOperationStatus) {
-            is AsyncOperation.Loading -> null
-            is AsyncOperation.Failure -> getUserMessage(catOperationStatus.asyncOp)
-            is AsyncOperation.Success -> getUserMessage(catOperationStatus.asyncOp)
+        return when (catOperationStatus) {
+            is AsyncOperation.Loading -> CatsUIState.Loading
+            is AsyncOperation.Failure, -> {
+                CatsUIState.Message(getUserMessage(catOperationStatus.asyncOp))
+            }
+
+            is AsyncOperation.Success -> CatsUIState.Data(items = cats)
         }
-        return CatsUIState(
-            items = cats,
-            isLoading = catOperationStatus is AsyncOperation.Loading,
-            userMessage = newUserMessage,
-        )
     }
 
     private fun getUserMessage(asyncOp: CatRepoAsyncEvents): Int {

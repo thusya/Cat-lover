@@ -66,5 +66,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.coil.compose)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutine.test)
 
+    // JUnit5
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.parametrized)
+    androidTestImplementation(libs.junit.jupiter)
 }
