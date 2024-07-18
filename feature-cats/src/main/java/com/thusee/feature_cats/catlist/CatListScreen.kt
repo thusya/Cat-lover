@@ -57,7 +57,7 @@ fun CatListScreen(
                         CatList(
                             list = catsUIState.items,
                             onItemClick = { catId ->
-                                navController.navigate("catDetails/$catId")
+                                navController.navigate(route = "catDetails/$catId")
                             },
                             viewModel = viewModel
                         )

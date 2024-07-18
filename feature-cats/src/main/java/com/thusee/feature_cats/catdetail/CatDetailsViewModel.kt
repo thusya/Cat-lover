@@ -14,11 +14,11 @@ import javax.inject.Inject
 @HiltViewModel
 class CatDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: CatsRepository
+    repository: CatsRepository
 ) : ViewModel() {
 
     private val catId: String =
-        savedStateHandle.get<String>("catId") ?: ""
+        savedStateHandle.get<String>("CAT_ID") ?: ""
 
     val catDetails: StateFlow<Cat> = repository.getCatById(catId).stateIn(
         scope = viewModelScope,
