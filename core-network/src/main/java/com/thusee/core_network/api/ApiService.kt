@@ -8,7 +8,7 @@ interface ApiService {
     @GET("images/search")
     suspend fun getImages(
         @Query("limit") limit: Int,
-        @Query("page") page: Int = 0,
+        @Query("page") page: Int = 1,
         @Query("has_breeds") hasBreeds: Int = 1
     ): List<CatResponse>
 }

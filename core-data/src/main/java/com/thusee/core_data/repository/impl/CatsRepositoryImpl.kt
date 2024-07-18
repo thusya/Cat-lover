@@ -30,14 +30,11 @@ class CatsRepositoryImpl @Inject constructor(
 
     override val cats: Flow<List<Cat>> = catDao
         .getCats()
-        .map {
-            it.map { catModel ->
-                catModel.toCat()
-            }
+        .map { list ->
+            list.map { it.toCat() }
         }
 
-    private val _operationStatus: MutableSharedFlow<AsyncOperation<CatRepoAsyncEvents>> =
-        MutableSharedFlow()
+    private val _operationStatus: MutableSharedFlow<AsyncOperation<CatRepoAsyncEvents>> = MutableSharedFlow(replay = 1)
 
     override val operationStatus: Flow<AsyncOperation<CatRepoAsyncEvents>> = _operationStatus
 
@@ -47,10 +44,10 @@ class CatsRepositoryImpl @Inject constructor(
             try {
                 val catsResponse = withContext(defaultDispatcher) {
                     apiService.getImages(
-                        limit = 20,
-                        hasBreeds = 1
+                        limit = 20
                     )
                 }
+
                 if (catsResponse.isEmpty()) {
                     _operationStatus.emit(
                         AsyncOperation.Failure(
@@ -58,20 +55,18 @@ class CatsRepositoryImpl @Inject constructor(
                             Throwable("Error, No cats in server!")
                         )
                     )
-                }
+                } else {
+                    val catModels = catsResponse
+                        .filter {
+                            it.breeds.isNotEmpty()
+                        }
+                        .map { it.toCatEntity() }
 
-                val catModels = catsResponse
-                    .filter {
-                        it.breeds.isNotEmpty()
+                    withContext(defaultDispatcher) {
+                        catDao.upsertCats(catModels)
                     }
-                    .map {
-                        it.toCatEntity()
-                    }
-
-                withContext(defaultDispatcher) {
-                    catDao.upsertCats(catModels)
+                    _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.LoadCatsSuccess))
                 }
-                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.LoadCatsSuccess))
             } catch (e: Exception) {
                 _operationStatus.emit(
                     AsyncOperation.Failure(
@@ -90,12 +85,8 @@ class CatsRepositoryImpl @Inject constructor(
 
         try {
             scope.launch(defaultDispatcher) { catDao.upsertCat(catModel) }
-            if (catModel.isFavorite == true) {
-                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.FavoriteCatsSuccess))
-            } else {
-                _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.UnFavoriteCatsSuccess))
-            }
-        } catch (e: Exception) {
+            _operationStatus.emit(AsyncOperation.Success(CatRepoAsyncEvents.FavoriteCatsSuccess))
+        }catch (e: Exception) {
             _operationStatus.emit(
                 AsyncOperation.Failure(
                     CatRepoAsyncEvents.FavoriteCatsFailed,

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -40,6 +42,8 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutine.test)
+    testImplementation(libs.mockk)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
