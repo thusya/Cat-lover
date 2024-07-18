@@ -10,4 +10,8 @@ data class CatEntity(
     val image: String,
     val description: String?,
     val isFavorite: Boolean?,
+//    val origin: String?,
+//    val lifeSpan: String?,
+//    val temperament: String?,
+//    val wikipediaUrl: String?,
 )

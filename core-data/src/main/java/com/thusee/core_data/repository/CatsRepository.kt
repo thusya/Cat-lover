@@ -10,4 +10,5 @@ interface CatsRepository {
     val operationStatus: Flow<AsyncOperation<CatRepoAsyncEvents>>
     suspend fun fetchCats()
     suspend fun onFavoriteCat(cat: Cat)
+    fun getCatById(catId: String): Flow<Cat>
 }

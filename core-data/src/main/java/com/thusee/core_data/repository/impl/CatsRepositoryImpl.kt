@@ -14,6 +14,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -100,6 +102,14 @@ class CatsRepositoryImpl @Inject constructor(
                     e
                 )
             )
+        }
+    }
+
+    override fun getCatById(catId: String): Flow<Cat> = flow {
+        try {
+            emitAll(catDao.getCatById(catId).map { it.toCat() })
+        } catch (e: Exception) {
+            emit(Cat())
         }
     }
 }

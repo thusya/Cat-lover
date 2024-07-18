@@ -16,4 +16,7 @@ interface CatDao {
 
     @Upsert
     suspend fun upsertCats(cats: List<CatEntity>)
+
+    @Query("SELECT * FROM cat_entity WHERE id = :catId")
+    fun getCatById(catId: String): Flow<CatEntity>
 }

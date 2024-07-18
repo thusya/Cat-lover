@@ -1,4 +1,4 @@
-package com.thusee.feature_cats
+package com.thusee.feature_cats.catlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.thusee.core_data.async.AsyncOperation
 import com.thusee.core_data.async.CatRepoAsyncEvents
 import com.thusee.core_data.model.Cat
 import com.thusee.core_data.repository.CatsRepository
+import com.thusee.feature_cats.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -62,7 +63,7 @@ class CatViewModel @Inject constructor(
             CatRepoAsyncEvents.LoadCatsFailed -> R.string.action_error
             CatRepoAsyncEvents.LoadCatsSuccess -> R.string.cats_loaded
             CatRepoAsyncEvents.UnFavoriteCatsFailed -> R.string.favorite_removed
-            is CatRepoAsyncEvents.UnFavoriteCatsSuccess -> R.string.favorite_removed
+            CatRepoAsyncEvents.UnFavoriteCatsSuccess -> R.string.favorite_removed
         }
     }
 

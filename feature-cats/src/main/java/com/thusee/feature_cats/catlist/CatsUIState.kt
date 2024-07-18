@@ -1,4 +1,4 @@
-package com.thusee.feature_cats
+package com.thusee.feature_cats.catlist
 
 import com.thusee.core_data.model.Cat
 

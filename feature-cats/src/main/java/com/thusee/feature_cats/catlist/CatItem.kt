@@ -1,4 +1,4 @@
-package com.thusee.feature_cats.screens
+package com.thusee.feature_cats.catlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -67,7 +67,7 @@ fun CatItem(
                         }
                         .build()
                 ),
-                contentDescription = "Character Image",
+                contentDescription = stringResource(id = R.string.cat_image),
                 modifier = Modifier
                     .size(80.dp)
                     .aspectRatio(1f),

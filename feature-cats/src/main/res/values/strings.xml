@@ -8,4 +8,10 @@
     <string name="cats_loaded">Cats Loaded!\n</string>
     <string name="cont_desc_back_arrow">back_arrow</string>
     <string name="cat">Cats</string>
+    <string name="cat_image">Cat_image</string>
+
+    <string name="text_description">Description</string>
+    <string name="text_origin">Origin: %s</string>
+    <string name="text_life_span">Life Span: %s years</string>
+    <string name="text_temperament">Temperament</string>
 </resources>
