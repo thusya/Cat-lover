@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.thusee.core_data.model.Cat
 import com.thusee.feature_cats.R
 import com.thusee.feature_cats.components.CustomToolbar
+import com.thusee.feature_cats.components.LoadingScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +50,7 @@ fun CatListScreen(
             Box(modifier = Modifier.padding(paddingValues)) {
                 when {
                     catsUIState.isLoading -> {
-                        //LoadingScreen()
+                        LoadingScreen()
                     }
 
                     else -> {
