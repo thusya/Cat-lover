@@ -6,30 +6,47 @@ import com.thusee.core_network.model.CatResponse
 val fakeCatResponse = listOf(
     CatResponse(
         listOf(
-            Breed("123", "asda", "asdad")
+            Breed(
+                id = "be",
+                name = "Siamese",
+                description = "Elegant type of cat",
+                wikipedia_url = "https://en.wikipedia.org/wiki/Siamese_cat",
+                temperament = "Playful, Sociable",
+                origin = "Thailand",
+                life_span = "10-15"
+            )
         ),
         "askldn",
         "url1"
     ),
     CatResponse(
         listOf(
-            Breed("21", "ajk", "alk")
+            Breed(
+                id = "be1",
+                name = "Siamese",
+                description = "Elegant type of cat",
+                wikipedia_url = "https://en.wikipedia.org/wiki/Siamese_cat",
+                temperament = "Playful, Sociable",
+                origin = "Thailand",
+                life_span = "10-15"
+            )
         ),
         "polmk",
         "url1"
     ),
     CatResponse(
         listOf(
-            Breed("43", "gjy", "pko")
+            Breed(
+                id = "be2",
+                name = "Siamese",
+                description = "Elegant type of cat",
+                wikipedia_url = "https://en.wikipedia.org/wiki/Siamese_cat",
+                temperament = "Playful, Sociable",
+                origin = "Thailand",
+                life_span = "10-15"
+            )
         ),
         "nxhu",
-        "url1"
-    ),
-    CatResponse(
-        listOf(
-            Breed("78", "niu", "mhu")
-        ),
-        "kbhj",
         "url1"
     )
 )

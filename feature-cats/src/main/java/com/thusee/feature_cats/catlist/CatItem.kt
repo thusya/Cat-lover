@@ -60,7 +60,7 @@ fun CatItem(
             Image(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current)
-                        .data(cat.image)
+                        .data(cat.imageUrl)
                         .apply {
                             placeholder(R.drawable.android)
                             crossfade(true)
@@ -78,7 +78,7 @@ fun CatItem(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = cat.breed,
+                    text = cat.name,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
@@ -115,8 +115,8 @@ fun CatItem(
 fun CatItemPreview() {
     val cat = Cat(
         id = "1",
-        breed = "Persian",
-        image = "https://test.com/image",
+        name = "Persian",
+        imageUrl = "https://test.com/image",
         description = "The Persian cat is a long-haired breed of cat characterized by its round face and short muzzle.",
         isFavorite = false
     )

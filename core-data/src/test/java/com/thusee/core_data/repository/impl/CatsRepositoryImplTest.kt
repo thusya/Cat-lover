@@ -31,11 +31,15 @@ class CatsRepositoryImplTest {
     private val fakeCatApi = FakeCatApiService(fakeCatResponse, 2000L, testScope)
     private val fakeCatModels = fakeCatResponse.map {
         CatEntity(
-            it.id,
-            it.breeds[0].name,
-            it.url,
-            it.breeds[0].description,
-            false
+            id = it.id,
+            name = it.breeds.getOrNull(0)?.name ?: "",
+            imageUrl = it.url,
+            description = it.breeds.getOrNull(0)?.description,
+            isFavorite = false,
+            origin = it.breeds.getOrNull(0)?.origin,
+            lifeSpan = it.breeds.getOrNull(0)?.life_span,
+            temperament = it.breeds.getOrNull(0)?.temperament,
+            wikipediaUrl = it.breeds.getOrNull(0)?.wikipedia_url
         )
     }
 

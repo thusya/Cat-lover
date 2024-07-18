@@ -39,7 +39,7 @@ fun CatDetailsScreen(
         modifier = modifier,
         topBar = {
             CustomToolbar(
-                title = cat.breed,
+                title = cat.name,
                 showBackButton = true,
                 onBack = {
                     navController.popBackStack()
@@ -54,11 +54,11 @@ fun CatDetailsScreen(
                 .padding(paddingValues)
         ) {
             Image(
-                painter = rememberAsyncImagePainter(cat.image),
+                painter = rememberAsyncImagePainter(cat.imageUrl),
                 contentDescription = stringResource(id = R.string.cat_image),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(300.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .padding(MaterialTheme.spacing.medium),
                 contentScale = ContentScale.FillHeight
@@ -77,8 +77,8 @@ fun CatDetailsScreen(
                     modifier = Modifier
                         .padding(MaterialTheme.spacing.medium)
                 ) {
-                    Text(text = stringResource(R.string.text_origin, ""))
-                    Text(text = stringResource(R.string.text_life_span, ""))
+                    Text(text = stringResource(R.string.text_origin, cat.origin))
+                    Text(text = stringResource(R.string.text_life_span, cat.lifeSpan))
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -98,7 +98,7 @@ fun CatDetailsScreen(
             ) {
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = MaterialTheme.spacing.medium),
+                        .padding(MaterialTheme.spacing.medium),
                     text = cat.description,
                     style = MaterialTheme.typography.bodyMedium
                 )

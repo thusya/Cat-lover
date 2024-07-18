@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.thusee.core_database.model.CatEntity
 
-@Database(entities = [CatEntity::class], version = 1)
+@Database(entities = [CatEntity::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getCatDao(): CatDao
 }
