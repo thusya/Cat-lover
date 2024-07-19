@@ -13,13 +13,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.thusee.core_theme.poppins
 import com.thusee.feature_cats.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,13 +33,7 @@ fun CustomToolbar(
                     .fillMaxWidth()
                     .absoluteOffset(x = if (showBackButton) (-20).dp else 0.dp),
                 text = title,
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center
-                )
+                style = MaterialTheme.typography.headlineLarge
             )
         },
         navigationIcon = {

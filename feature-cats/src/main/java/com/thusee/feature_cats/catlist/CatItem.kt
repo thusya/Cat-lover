@@ -50,7 +50,7 @@ fun CatItem(
                 vertical = MaterialTheme.spacing.small,
             )
             .fillMaxWidth()
-            .height(100.dp)
+            .height(MaterialTheme.spacing.spacing100)
     ) {
         Row(
             modifier = Modifier
@@ -69,7 +69,7 @@ fun CatItem(
                 ),
                 contentDescription = stringResource(id = R.string.cat_image),
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(MaterialTheme.spacing.spacing80)
                     .aspectRatio(1f),
                 contentScale = ContentScale.Fit
             )
@@ -79,12 +79,13 @@ fun CatItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = cat.name,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
                 Text(
                     text = cat.description,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 2
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
 
