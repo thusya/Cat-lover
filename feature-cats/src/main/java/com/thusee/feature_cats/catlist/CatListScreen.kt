@@ -12,6 +12,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +23,7 @@ import com.thusee.core_data.model.Cat
 import com.thusee.feature_cats.R
 import com.thusee.feature_cats.components.CustomToolbar
 import com.thusee.feature_cats.components.LoadingScreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,8 +32,9 @@ fun CatListScreen(
     viewModel: CatViewModel = hiltViewModel(),
     navController: NavController,
 ) {
-    val catsUIState = viewModel.uiState.collectAsStateWithLifecycle()
+    val catsUIState by viewModel.uiState.collectAsStateWithLifecycle()
     val scaffoldState = rememberBottomSheetScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -44,34 +48,37 @@ fun CatListScreen(
         },
         content = { paddingValues ->
             Box(modifier = Modifier.padding(paddingValues)) {
-                when (val state = catsUIState.value) {
-                    is CatsUIState.Loading -> {
+                when {
+                    catsUIState.isLoading -> {
                         LoadingScreen()
                     }
 
-                    is CatsUIState.Data -> {
+                    catsUIState.items.isNotEmpty() -> {
                         CatList(
-                            list = state.items,
+                            list = catsUIState.items,
                             onItemClick = { catId ->
                                 navController.navigate(route = "catDetails/$catId")
                             },
                             viewModel = viewModel
                         )
                     }
-
-                    is CatsUIState.Message -> {
-                        val message = stringResource(id = state.messageId)
-                        LaunchedEffect(scaffoldState.snackbarHostState) {
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = message,
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    }
                 }
             }
         }
     )
+    catsUIState.userMessage?.let { userMessage ->
+        val message = stringResource(id = userMessage)
+
+        LaunchedEffect(catsUIState, message) {
+            coroutineScope.launch {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = "",
+                    duration = SnackbarDuration.Short
+                )
+            }
+        }
+    }
 }
 
 @Composable

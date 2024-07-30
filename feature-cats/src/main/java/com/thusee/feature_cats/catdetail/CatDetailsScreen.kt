@@ -77,8 +77,14 @@ fun CatDetailsScreen(
                     modifier = Modifier
                         .padding(MaterialTheme.spacing.medium)
                 ) {
-                    Text(text = stringResource(R.string.text_origin, cat.origin))
-                    Text(text = stringResource(R.string.text_life_span, cat.lifeSpan))
+                    Text(
+                        text = stringResource(R.string.text_origin, cat.origin),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.text_life_span, cat.lifeSpan),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -86,7 +92,7 @@ fun CatDetailsScreen(
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.spacing.medium),
                 text = stringResource(R.string.text_description),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.titleMedium
             )
             Card(
                 modifier = Modifier
